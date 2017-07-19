@@ -1,23 +1,21 @@
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
-from django.conf import settings
-
+from django.template import loader
 from .models import Question
 
 
 def index(request):
-    return HttpResponse(b'Hello World')
+    recent_questions = Question.objects.order_by('-pub_date')[:5]
+    template = loader.get_template('serve/index.html')              # template methods is always looking in 'templates'
+    context = {                                                     # directory
+        'recent_questions': recent_questions,
+    }
+    return HttpResponse(template.render(context, request))          # template variable - an instance of Template class
 
 
 def welcome(request):
-    with open(settings.BASE_DIR + r'/templates/welcome.html') as f:
+    with open('templates/serve/welcome.html') as f:                 # open method looking in current directory
         return HttpResponse(f)
-
-
-def results(request):
-    recent_questions = Question.objects.order_by('-pub_date')[:5]
-    output = ', '.join([q.question_text for q in recent_questions])
-    return HttpResponse(output)
 
 
 count = 0
