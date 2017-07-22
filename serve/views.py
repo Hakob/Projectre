@@ -6,12 +6,14 @@ from .models import Question
 
 def index(request):
     recent_questions = Question.objects.order_by('-pub_date')[:5]
-    template = loader.get_template('serve/index.html')              # template methods is always looking in 'templates'
-    context = {                                                     # directory
+    context = {                                                     
         'recent_questions': recent_questions,
     }
-    return HttpResponse(template.render(context, request))          # template variable - an instance of Template class
-
+    return render(request, 'serve/index.html', context)
+    
+#    It's equalent to below
+#    template = loader.get_template('serve/index.html')     // template methods is always looking in 'templates'
+#    return HttpResponse(template.render(context, request)) // template variable - an instance of Template class
 
 def welcome(request):
     with open('templates/serve/welcome.html') as f:                 # open method looking in current directory
